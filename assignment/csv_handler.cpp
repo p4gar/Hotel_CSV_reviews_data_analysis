@@ -1,125 +1,134 @@
 #include "csv_handler.hpp"
 using namespace std;
 
-// Function to load words from a file into an array
-int loadWords(const string &filename, string wordArray[], int maxSize)
+class csvHandler
 {
-    ifstream file(filename);
-    if (!file.is_open())
+private:
+    string positiveWords[5000]; // Store positive words
+    string negativeWords[3000]; // Store negative words
+    int positiveCount;          // Number of positive words loaded
+    int negativeCount;          // Number of negative words loaded
+public:
+    // Function to load words from a file into an array
+    int loadWords(const string &filename, string wordArray[], int maxSize)
     {
-        cerr << "Error opening file: " << filename << endl;
-        return 0;
-    }
-
-    string word;
-    int count = 0;
-    while (file >> word && count < maxSize)
-    {
-        wordArray[count] = word;
-        count++;
-    }
-
-    file.close();
-    return count; // Return the number of words loaded
-}
-
-// Function to check if a word exists in an array
-bool wordExists(const string &word, const string wordArray[], int wordCount)
-{
-    for (int i = 0; i < wordCount; i++)
-    {
-        if (word == wordArray[i])
+        ifstream file(filename);
+        if (!file.is_open())
         {
-            return true;
+            cerr << "Error opening file: " << filename << endl;
+            return 0;
         }
-    }
-    return false;
-}
 
-// Function to clean a word by removing punctuation and converting to lowercase
-string cleanWord(const string &word)
-{
-    string cleanedWord;
-    for (char ch : word)
-    {
-        if (!ispunct(ch))
-        {                               // Remove punctuation
-            cleanedWord += tolower(ch); // Convert to lowercase
-        }
-    }
-    return cleanedWord;
-}
-
-double calcSentiScore(int posCount, int negCount)
-{
-    // Step 1: Calculate the Raw Sentiment Score
-    int rawSentiScore = posCount - negCount;
-
-    // Step 2: Calculate total word count and derive Min and Max Raw Scores
-    int totalWordCount = posCount + negCount;
-    int minRawScore = -totalWordCount;
-    int maxRawScore = totalWordCount;
-
-    // Step 3: Calculate Normalized Score
-    double normalizedScore = (rawSentiScore - minRawScore) / (double)(maxRawScore - minRawScore);
-
-    // Step 4: Calculate final Sentiment Score (between 1 and 5)
-    double finalSentiScore = 1 + (4 * normalizedScore);
-
-    return finalSentiScore;
-}
-
-// Function to count positive and negative words in a review
-void countSentimentWords(const string &review, const string positiveWords[], int positiveCount, const string negativeWords[], int negativeCount)
-{
-    int positiveWordCount = 0;
-    int negativeWordCount = 0;
-    int revisedRating; // rounded up rating
-
-    // Tokenize the review string
-    stringstream ss(review);
-    string word;
-
-    cout << "Debugging cleaned words:\n"; // Debugging output for cleaned words
-    while (ss >> word)
-    {
-        // Clean the word
-        string cleanedWord = cleanWord(word);
-
-        // Print cleaned word for debugging
-        cout << cleanedWord << " ";
-
-        // Check for the word in positive and negative arrays
-        if (wordExists(cleanedWord, positiveWords, positiveCount))
+        string word;
+        int count = 0;
+        while (file >> word && count < maxSize)
         {
-            positiveWordCount++;
+            wordArray[count] = word;
+            count++;
         }
-        else if (wordExists(cleanedWord, negativeWords, negativeCount))
-        {
-            negativeWordCount++;
-        }
+
+        file.close();
+        return count; // Return the number of words loaded
     }
-    cout << endl;
-    cout << endl;
+    csvHandler(const string &positiveWordFile, const string &negativeWordFile)
+    {
+        positiveCount = loadWords(positiveWordFile, positiveWords, 1000);
+        negativeCount = loadWords(negativeWordFile, negativeWords, 1000);
+    }
 
-    // Print results
-    cout << "Positive words: " << positiveWordCount << endl;
-    cout << "Negative words: " << negativeWordCount << endl;
+    // Function to check if a word exists in an array
+    bool wordExists(const string &word, const string wordArray[], int wordCount)
+    {
+        for (int i = 0; i < wordCount; i++)
+        {
+            if (word == wordArray[i])
+            {
 
-    double sentiScore = calcSentiScore(positiveWordCount, negativeWordCount);
-    revisedRating = (int)sentiScore;
-    cout << "Sentiment score (1 - 5): " << sentiScore << " , thus the rating should be equal to " << revisedRating << endl;
-}
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Function to clean a word by removing punctuation and converting to lowercase
+    string cleanWord(const string &word)
+    {
+        string cleanedWord;
+        for (char ch : word)
+        {
+            if (!ispunct(ch))
+            {                               // Remove punctuation
+                cleanedWord += tolower(ch); // Convert to lowercase
+            }
+        }
+        return cleanedWord;
+    }
+
+    double calcSentiScore(int posCount, int negCount)
+    {
+        // Step 1: Calculate the Raw Sentiment Score
+        int rawSentiScore = posCount - negCount;
+
+        // Step 2: Calculate total word count and derive Min and Max Raw Scores
+        int totalWordCount = posCount + negCount;
+        int minRawScore = -totalWordCount;
+        int maxRawScore = totalWordCount;
+
+        // Step 3: Calculate Normalized Score
+        double normalizedScore = (rawSentiScore - minRawScore) / (double)(maxRawScore - minRawScore);
+
+        // Step 4: Calculate final Sentiment Score (between 1 and 5)
+        double finalSentiScore = 1 + (4 * normalizedScore);
+
+        return finalSentiScore;
+    }
+
+    // Function to count positive and negative words in a review
+    void countSentimentWords(const string &review)
+    {
+        int positiveWordCount = 0;
+        int negativeWordCount = 0;
+
+        // Tokenize the review string
+        stringstream ss(review);
+        string word;
+
+        cout << "Debugging cleaned words:\n";
+
+        while (ss >> word)
+        {
+            // Clean the word
+            string cleanedWord = cleanWord(word);
+
+            // Print cleaned word for debugging
+            cout << cleanedWord << " ";
+
+            // Check for the word in positive and negative arrays
+            if (wordExists(cleanedWord, positiveWords, positiveCount))
+            {
+                positiveWordCount++;
+            }
+            else if (wordExists(cleanedWord, negativeWords, negativeCount))
+            {
+                negativeWordCount++;
+            }
+        }
+        cout << endl;
+        cout << endl;
+
+        // Print results
+        cout << "Positive words: " << positiveWordCount << endl;
+        cout << "Negative words: " << negativeWordCount << endl;
+
+        double sentiScore = calcSentiScore(positiveWordCount, negativeWordCount);
+        int revisedRating = (int)sentiScore;
+        cout << "Sentiment score (1 - 5): " << sentiScore << " , thus the rating should be equal to " << revisedRating << endl;
+    }
+};
 
 int main()
 {
-    // Load positive and negative words from files
-    const int MAX_WORDS = 5000;
-    string positiveWords[MAX_WORDS];
-    string negativeWords[MAX_WORDS];
-
-    int positiveCount = loadWords("positive-words.txt", positiveWords, MAX_WORDS);
-    int negativeCount = loadWords("negative-words.txt", negativeWords, MAX_WORDS);
+    csvHandler handler("positive-words.txt", "negative-words.txt");
 
     // Open the CSV file containing reviews
     ifstream file("tripadvisor_hotel_reviews.csv");
@@ -129,6 +138,7 @@ int main()
         return 1;
     }
 
+    auto start = chrono::high_resolution_clock::now();
     string line;
     while (getline(file, line))
     {
@@ -142,11 +152,15 @@ int main()
         cout << endl;
 
         // Count positive and negative words in the review
-        countSentimentWords(review, positiveWords, positiveCount, negativeWords, negativeCount);
+        handler.countSentimentWords(review);
         cout << "------------------------------------------" << endl;
         cout << endl;
     }
 
     file.close();
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "The total time taken for the sentiment analysis process using linear search is " << duration.count() << " microseconds" << endl;
+
     return 0;
 }

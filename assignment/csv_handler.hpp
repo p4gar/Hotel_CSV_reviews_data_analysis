@@ -7,6 +7,7 @@
 #include <cstring>   // For strcmp and strtok
 #include <algorithm> // For remove_if to handle punctuation
 #include <cctype>    // For ispunct, tolower
+#include <chrono> // Include the chrono library for time measurement
 using namespace std;
 
 int loadWords(const string &filename, string wordArray[], int maxSize);
