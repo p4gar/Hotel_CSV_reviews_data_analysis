@@ -8,6 +8,8 @@
 #include <algorithm> // For remove_if to handle punctuation
 #include <cctype>    // For ispunct, tolower
 #include <chrono> // Include the chrono library for time measurement
+#include <map>
+#include <vector>
 using namespace std;
 
 class csvHandler
@@ -37,7 +39,7 @@ class csvHandler
 
     void countSentimentWordsusingLinearSearch(const string &review);
 
-    void countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount);
+    void countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, map<string, int> &wordFrequencyMap);
 
 };
 

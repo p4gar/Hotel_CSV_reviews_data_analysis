@@ -7,6 +7,14 @@ int main()
     csvHandler handler1;
     int positiveWordCount, negativeWordCount;
 
+    // Map to store word frequencies
+    map<string, int> wordFrequencyMap;
+
+    // Variables to store total positive and negative words and total reviews
+    int totalPositiveWords = 0;
+    int totalNegativeWords = 0;
+    int totalReviews = 0;
+
     // Load review CSV file
     ifstream file("tripadvisor_hotel_reviews.csv");
     if (!file.is_open())
@@ -33,8 +41,12 @@ int main()
         cout << endl;
 
         // Count positive and negative words in the review
-        handler1.countSentimentWordsUsingBinarySearch(review, positiveWordCount, negativeWordCount);
+        handler1.countSentimentWordsUsingBinarySearch(review, positiveWordCount, negativeWordCount,  wordFrequencyMap);
         
+        totalPositiveWords += positiveWordCount;
+        totalNegativeWords += negativeWordCount;
+        totalReviews++;
+
         cout << "Positive Words: " << positiveWordCount << endl;
         cout << "Negative Words: " << negativeWordCount << endl;
 
@@ -53,6 +65,44 @@ int main()
     // Close file
     file.close();
 
+    system("pause");
+
+    // Print total counts
+    cout << "Total Reviews: " << totalReviews << endl;
+    cout << "Total Counts of Positive Words: " << totalPositiveWords << endl;
+    cout << "Total Counts of Negative Words: " << totalNegativeWords << endl;
+    cout << endl;
+
+    // Sort word frequencies
+    vector<pair<string, int>> sortedWords(wordFrequencyMap.begin(), wordFrequencyMap.end());
+    sort(sortedWords.begin(), sortedWords.end(), [](const pair<string, int>& a, const pair<string, int>& b) 
+    {
+        return a.second < b.second;
+    });
+
+    // Print tword frequencies in ascending order
+    cout << "Frequency of each word used in overall reviews, listed in ascending order based on frequency: " << endl;
+    for (const auto &pair : sortedWords)
+    {
+        cout << pair.first << ": " << pair.second << " times" << endl;
+    }
+    cout << endl;
+
+    // Find words with maximum and minimum frequencies
+    auto maxIt = max_element(sortedWords.begin(), sortedWords.end(), [](const pair<string, int>& a, const pair<string, int>& b) 
+    {
+        return a.second < b.second;
+    });
+    auto minIt = min_element(sortedWords.begin(), sortedWords.end(), [](const pair<string, int>& a, const pair<string, int>& b) 
+    {
+        return a.second < b.second;
+    });
+    
+    // Print words with maximum and minimum frequencies
+    cout << "Maximum used word in the reviews: " << maxIt->first << " = " << maxIt->second << " times" << endl;
+    cout << "Minimum used word in the reviews: " << minIt->first << " = " << minIt->second << " times" << endl;
+    cout << endl;
+    
     // Print execution time
     cout << "The total time taken for the sentiment analysis process using binary search is " << duration.count() << " microseconds." << endl;
 

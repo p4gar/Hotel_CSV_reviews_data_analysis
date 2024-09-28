@@ -94,7 +94,7 @@ bool csvHandler::binarySearch(const string &word, const string wordArray[], int 
     return false;
 }
 
-void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount) // diff
+void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, map<string, int> &wordFrequencyMap)  // diff
 {
     positiveWordCount = 0;
     negativeWordCount = 0;
@@ -111,10 +111,12 @@ void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int 
         if (binarySearch(cleanedWord, positiveWords, positiveCount))
         {
             positiveWordCount++;
+            wordFrequencyMap[cleanedWord]++;
         }
         else if (binarySearch(cleanedWord, negativeWords, negativeCount))
         {
             negativeWordCount++;
+            wordFrequencyMap[cleanedWord]++;
         }
     }
 
