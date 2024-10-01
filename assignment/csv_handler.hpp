@@ -1,5 +1,5 @@
-#ifndef CSV_HANDLER.HPP 
-#define CSV_HANDLER.HPP 
+#ifndef CSV_HANDLER_HPP
+#define CSV_HANDLER_HPP
 
 #include <iostream>
 #include <fstream>
@@ -7,17 +7,32 @@
 #include <cstring>   // For strcmp and strtok
 #include <algorithm> // For remove_if to handle punctuation
 #include <cctype>    // For ispunct, tolower
-#include <chrono> // Include the chrono library for time measurement
+#include <chrono>    // Include the chrono library for time measurement
 using namespace std;
 
-int loadWords(const string &filename, string wordArray[], int maxSize);
+class csvHandler {
+private:
+    string positiveWords[5000]; // Store positive words
+    string negativeWords[5000]; // Store negative words
 
-bool wordExists(const string &word, const string wordArray[], int wordCount);
+public:
+    // Constructor to initialize the handler with word files
+    csvHandler(const string &positiveWordFile, const string &negativeWordFile);
 
-string cleanWord(const string &word);
+    // Function to load words from a file into a vector
+    void loadWords(const string &filename, string wordArray[]);
 
-double calcSentiScore(int posCount, int negCount);
+    // Function to check if a word exists in a vector
+    bool wordExists(const string &word, const string wordArray[]);
 
-void countSentimentWords(const string &review, const string positiveWords[], int positiveCount, const string negativeWords[], int negativeCount);
+    // Function to clean a word by removing punctuation and converting to lowercase
+    string cleanWord(const string &word);
+
+    // Function to calculate the sentiment score
+    double calcSentiScore(int posCount, int negCount);
+
+    // Function to count positive and negative words in a review
+    void countSentimentWords(const string &review);
+};
 
 #endif
