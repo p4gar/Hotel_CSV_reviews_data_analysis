@@ -4,16 +4,23 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cstring>   // For strcmp and strtok
-#include <algorithm> // For remove_if to handle punctuation
-#include <cctype>    // For ispunct, tolower
-#include <chrono>    // Include the chrono library for time measurement
+#include <cstring> // For strcmp and strtok
+#include <cctype>  // For ispunct, tolower
+#include <chrono>  // Include the chrono library for time measurement
 using namespace std;
 
-class csvHandler {
+class csvHandler
+{
 private:
-    string positiveWords[5000]; // Store positive words
+    string positiveWords[3000]; // Store positive words
     string negativeWords[5000]; // Store negative words
+    string uniqueWords[50000];  // To store unique words
+    int wordFrequency[50000] = {0}; // To store frequencies of words
+    int totalUniqueWords = 0; // Track unique words count
+
+    int totalReviews = 0;
+    int totalPositiveWords = 0;
+    int totalNegativeWords = 0;
 
 public:
     // Constructor to initialize the handler with word files
@@ -33,6 +40,12 @@ public:
 
     // Function to count positive and negative words in a review
     void countSentimentWords(const string &review);
+
+    // Function to print word frequencies and max/min used words
+    void printWordStats();
+
+    // Function to add or update word frequency
+    void updateWordFrequency(const string &word);
 };
 
 #endif
