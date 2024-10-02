@@ -5,18 +5,15 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>   // For strcmp and strtok
-#include <algorithm> // For remove_if to handle punctuation
 #include <cctype>    // For ispunct, tolower
 #include <chrono> // Include the chrono library for time measurement
-#include <map>
-#include <vector>
 using namespace std;
 
 class csvHandler
 {
     private:
-    string positiveWords[5000]; // Store positive words
-    string negativeWords[3000]; // Store negative words
+    string positiveWords[3000]; // Store positive words
+    string negativeWords[5000]; // Store negative words
     int positiveCount;          // Number of positive words loaded
     int negativeCount;          // Number of negative words loaded
 
@@ -39,8 +36,16 @@ class csvHandler
 
     void countSentimentWordsusingLinearSearch(const string &review);
 
-    void countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, map<string, int> &wordFrequencyMap);
+    void countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, string wordArray[], int frequencyArray[], int &wordArraySize);
 
+    void addWordFrequency(const string &word, string wordArray[], int frequencyArray[], int &size);
+
+    void customSort(string wordArray[], int frequency[], int size);
+
+    int findMaxIndex(int frequencyArray[], int size);
+
+    int findMinIndex(int frequencyArray[], int size);
+    
 };
 
 

@@ -4,10 +4,10 @@ using namespace std;
 csvHandler::csvHandler()
 {
     // Load positive and negative words into arrays
-    positiveCount = loadWords("positive-words.txt", positiveWords, 5000);
-    negativeCount = loadWords("negative-words.txt", negativeWords, 3000);
+    positiveCount = loadWords("positive-words.txt", positiveWords, 3000);
+    negativeCount = loadWords("negative-words.txt", negativeWords, 5000);
 
-    // Sort positive and negative words using insertion sort algorithm
+    // Sort the word arrays to ensure binary search works
     insertionSort(positiveWords, positiveCount);
     insertionSort(negativeWords, negativeCount);
 }
@@ -94,7 +94,47 @@ bool csvHandler::binarySearch(const string &word, const string wordArray[], int 
     return false;
 }
 
-void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, map<string, int> &wordFrequencyMap)  // diff
+// Increase word frequency
+void csvHandler::addWordFrequency(const string &word, string wordArray[], int frequencyArray[], int &size)
+{
+    // Check if the word is in the positive words
+    if (binarySearch(word, positiveWords, positiveCount))
+    {
+        // Increment the frequency for positive words
+        for (int i = 0; i < size; i++)
+        {
+            if (wordArray[i] == word)
+            {
+                frequencyArray[i]++;
+                return; // Exit after updating frequency
+            }
+        }
+
+        wordArray[size] = word;
+        frequencyArray[size] = 1;
+        size++;
+    }
+    // Check if the word is in the negative words
+    else if (binarySearch(word, negativeWords, negativeCount))
+    {
+        // Increment the frequency for negative words
+        for (int i = 0; i < size; i++)
+        {
+            if (wordArray[i] == word)
+            {
+                frequencyArray[i]++;
+                return; // Exit after updating frequency
+            }
+        }
+
+        // If the word is not found in uniqueWords, add it
+        wordArray[size] = word;
+        frequencyArray[size] = 1;
+        size++;
+    }
+}
+
+void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, string wordArray[], int frequencyArray[], int &wordArraySize)  // diff
 {
     positiveWordCount = 0;
     negativeWordCount = 0;
@@ -111,15 +151,63 @@ void csvHandler::countSentimentWordsUsingBinarySearch(const string &review, int 
         if (binarySearch(cleanedWord, positiveWords, positiveCount))
         {
             positiveWordCount++;
-            wordFrequencyMap[cleanedWord]++;
+            addWordFrequency(cleanedWord, wordArray, frequencyArray, wordArraySize);
         }
         else if (binarySearch(cleanedWord, negativeWords, negativeCount))
         {
             negativeWordCount++;
-            wordFrequencyMap[cleanedWord]++;
+            addWordFrequency(cleanedWord, wordArray, frequencyArray, wordArraySize);
         }
     }
 
     cout << endl;
     cout << endl;
+}
+
+// Sort arrays using insertion sort
+void csvHandler::customSort(string wordArray[], int frequencyArray[], int size)
+{
+    for (int i = 1; i < size; i++)
+    {
+        string keyWord = wordArray[i];
+        int keyFrequency = frequencyArray[i];
+        int j = i - 1;
+
+        while (j >= 0 && frequencyArray[j] > keyFrequency)
+        {
+            wordArray[j + 1] = wordArray[j];
+            frequencyArray[j + 1] = frequencyArray[j];
+            j--;
+        }
+        wordArray[j + 1] = keyWord;
+        frequencyArray[j + 1] = keyFrequency;
+    }
+}
+
+// Find index of maximum element
+int csvHandler::findMaxIndex(int frequencyArray[], int size)
+{
+    int maxIndex = 0;
+    for (int i = 1; i < size; i++)
+    {
+        if (frequencyArray[i] > frequencyArray[maxIndex])
+        {
+            maxIndex = i;
+        }
+    }
+    return maxIndex;
+}
+
+// Find index of minimum element
+int csvHandler::findMinIndex(int frequencyArray[], int size)
+{
+    int minIndex = 0;
+    for (int i = 1; i < size; i++)
+    {
+        if (frequencyArray[i] < frequencyArray[minIndex])
+        {
+            minIndex = i;
+        }
+    }
+    return minIndex;
 }
