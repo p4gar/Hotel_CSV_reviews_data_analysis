@@ -3,8 +3,8 @@
 csvHandler::csvHandler()
 {
     // Load positive and negative words into arrays
-    positiveCount = loadWords("positive-words.txt", positiveWords, 3000);
-    negativeCount = loadWords("negative-words.txt", negativeWords, 5000);
+    positiveCount = loadWords("positive-words.txt", positiveWords, 2010);
+    negativeCount = loadWords("negative-words.txt", negativeWords, 4790);
 }
 
 // Function to load words from a file into an array
