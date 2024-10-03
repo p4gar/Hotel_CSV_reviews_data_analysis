@@ -1,32 +1,37 @@
-#ifndef CSV_HANDLER2.HPP 
-#define CSV_HANDLER2.HPP 
+#ifndef CSV_HANDLER2_HPP
+#define CSV_HANDLER2_HPP
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cstring>   // For strcmp and strtok
-#include <cctype>    // For ispunct, tolower
-#include <chrono> // Include the chrono library for time measurement
+#include <cstring> // For strcmp and strtok
+#include <cctype>  // For ispunct, tolower
+#include <chrono>  // Include the chrono library for time measurement
 using namespace std;
 
 class csvHandler
 {
-    private:
-    string positiveWords[3000]; // Store positive words
-    string negativeWords[5000]; // Store negative words
-    int positiveCount;          // Number of positive words loaded
-    int negativeCount;          // Number of negative words loaded
+private:
+    string positiveWords[3000];     // Store positive words
+    string negativeWords[5000];     // Store negative words
+    int positiveCount;              // Number of positive words loaded
+    int negativeCount;              // Number of negative words loaded
+    string uniqueWords[50000];      // To store unique words
+    int wordFrequency[50000] = {0}; // To store frequencies of words
+    int totalUniqueWords = 0;       // Track unique words count
 
-    public:
+    int totalReviews = 0;
+    int totalPositiveWords = 0;
+    int totalNegativeWords = 0;
+
+public:
     csvHandler();
-    
-    void loadSentiWords(const string &positiveWords, const string &negativeWords);
-    
+
     int loadWords(const string &filename, string wordArray[], int maxSize);
 
     void insertionSort(string wordArray[], int count);
 
-    bool wordExists(const string &word, const string wordArray[], int wordCount);
+    bool linearSearch(const string &word, const string wordArray[], int wordCount);
 
     bool binarySearch(const string &word, const string wordArray[], int wordCount);
 
@@ -36,17 +41,13 @@ class csvHandler
 
     void countSentimentWordsusingLinearSearch(const string &review);
 
-    void countSentimentWordsUsingBinarySearch(const string &review, int &positiveWordCount, int &negativeWordCount, string wordArray[], int frequencyArray[], int &wordArraySize);
+    void countSentimentWordsUsingBinarySearch(const string &review);
 
-    void addWordFrequency(const string &word, string wordArray[], int frequencyArray[], int &size);
+    void addWordFrequency(const string &word);
 
-    void customSort(string wordArray[], int frequency[], int size);
+    void updateWordFrequency(const string &word);
 
-    int findMaxIndex(int frequencyArray[], int size);
-
-    int findMinIndex(int frequencyArray[], int size);
-    
+    void printWordStats(bool useBubbleSort);
 };
-
 
 #endif

@@ -1,11 +1,13 @@
-#include "csv_handler.hpp"
+#include "csv_handler2.hpp"
+
+const int MAX_WORDS = 50000;
 
 int main()
 {
-    // Initialize the handler with the positive and negative words files
-    csvHandler handler("positive-words.txt", "negative-words.txt");
+    // New Handler Object
+    csvHandler handler1;
 
-    // Open the CSV file containing reviews
+    // Load review CSV file
     ifstream file("tripadvisor_hotel_reviews.csv");
     if (!file.is_open())
     {
@@ -13,29 +15,30 @@ int main()
         return 1;
     }
 
-    // Measure the time taken for processing the file
-    auto start = chrono::high_resolution_clock::now();
+    // Start timer
+    auto start = chrono::system_clock::now();
 
+    // Count sentiment words in each review
     string line;
     while (getline(file, line))
     {
-        // Split the line into review and rating using a comma as delimiter
-        size_t commaPos = line.find_last_of(','); // Find the last comma before the rating
+        // Separate lines into written review and numbered rating, using a comma as delimiter
+        size_t commaPos = line.find_last_of(',');
         if (commaPos == string::npos)
         {
             cerr << "Invalid format in line: " << line << endl;
             continue; // Skip malformed lines
         }
+        string review = line.substr(0, commaPos);
+        string rating = line.substr(commaPos + 1);
 
-        string review = line.substr(0, commaPos);  // Extract review part
-        string rating = line.substr(commaPos + 1); // Extract rating part (not used for now)
-
+        // Print review and rating
         cout << "Review: " << review << endl;
         cout << "Rating: " << rating << endl;
         cout << endl;
 
         // Count positive and negative words in the review
-        handler.countSentimentWords(review);
+        handler1.countSentimentWordsusingLinearSearch(review);
 
         // Split review into individual words and update word frequency
         istringstream ss(review);
@@ -58,26 +61,36 @@ int main()
                 continue;
 
             // Update frequency count for the cleaned word
-            handler.updateWordFrequency(cleanedWord);
+            handler1.updateWordFrequency(cleanedWord);
         }
 
-        cout << "------------------------------------------" << endl;
+        cout << "-----------------------------------------" << endl;
         cout << endl;
-        
     }
 
+    // End timer
+    auto end = chrono::system_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+
+    // Close file
     file.close();
 
-    // Measure and display the time taken
-    auto stop = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    cout << "The total time taken for the sentiment analysis process using linear search is " << duration.count() << " microseconds" << endl;
+    // Print execution time
+    cout << "The total time taken for the sentiment analysis process using linear search is " << duration.count() << " microseconds." << endl;
 
-    auto start2 = chrono::high_resolution_clock::now();
-    handler.printWordStats();
+    system("pause");
+
+    // Start timer
+    auto start2 = chrono::system_clock::now();
+
+    // Sort word frequencies
+    handler1.printWordStats(true);
+
     auto stop2 = chrono::high_resolution_clock::now();
     auto duration2 = chrono::duration_cast<chrono::microseconds>(stop2 - start2);
-    cout << "The total time taken for the report analysis using bubble sort is " << duration2.count() << " microseconds" << endl;
+
+    // Print execution time
+    cout << "The total time taken for the report analysis process using bubble sort is " << duration2.count() << " microseconds." << endl;
 
     system("pause");
 
