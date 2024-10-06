@@ -231,11 +231,13 @@ void csvHandler::countSentimentWordsUsingBinarySearch(const string &review) // d
         {
             positiveWordCount++;
             addWordFrequency(cleanedWord);
+            totalPositiveWords++;
         }
         else if (binarySearch(cleanedWord, negativeWords, negativeCount))
         {
             negativeWordCount++;
             addWordFrequency(cleanedWord);
+            totalNegativeWords++;
         }
     }
 
@@ -366,7 +368,7 @@ void csvHandler::searchRecordByIndex(const string &filename, int index, csvHandl
         if (currentIndex == index)
         {
             // Found the desired line
-            cout << "Record at index " << index << ": " << line << endl;
+            cout << "Record at index " << index << ":" << endl;
 
             // Process the record (e.g., extract review and rating)
             size_t commaPos = line.find_last_of(',');

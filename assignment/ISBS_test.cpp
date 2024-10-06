@@ -5,7 +5,8 @@ int main()
 {
     // New Handler Object
     csvHandler handler1;
-    
+    int option = 0;
+
     // Load review CSV file
     ifstream file("tripadvisor_hotel_reviews.csv");
     if (!file.is_open())
@@ -39,9 +40,6 @@ int main()
         // Count positive and negative words in the review
         handler1.countSentimentWordsUsingBinarySearch(review);
 
-        
-
-        
         cout << "-----------------------------------------" << endl;
         cout << endl;
     }
@@ -57,6 +55,7 @@ int main()
     cout << "The total time taken for the sentiment analysis process using binary search is " << duration.count() << " microseconds." << endl;
 
     system("pause");
+    cout << endl;
 
     auto start2 = chrono::system_clock::now();
 
@@ -70,6 +69,38 @@ int main()
     cout << "The total time taken for the report analysis process using insertion sort is " << duration2.count() << " microseconds." << endl;
 
     system("pause");
+
+    bool choice = true;
+    string input;
+
+    while (choice)
+    {
+        cout << endl;
+        cout << "Would you like to search for a specific review? (y/n): ";
+        cin >> input;
+
+        if (input == "y" || input == "Y")
+        {
+            string filename = "tripadvisor_hotel_reviews.csv";
+            int recordIndex;
+
+            cout << "Enter the index of the record you want to analyze (1 - 20492): ";
+            cin >> recordIndex;
+            cout << string(54, '-') << endl;
+
+            handler1.searchRecordByIndex(filename, recordIndex, handler1);
+
+            system("pause");
+        }
+        else if (input == "n" || input == "N")
+        {
+            choice = false;
+        }
+        else
+        {
+            cout << "Invalid choice. Please enter 'y' or 'n'." << endl;
+        }
+    }
 
     return 0;
 }
