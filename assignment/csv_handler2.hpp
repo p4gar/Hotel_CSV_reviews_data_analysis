@@ -29,8 +29,6 @@ public:
 
     int loadWords(const string &filename, string wordArray[], int maxSize);
 
-    void insertionSort(string wordArray[], int count);
-
     bool linearSearch(const string &word, const string wordArray[], int wordCount);
 
     bool binarySearch(const string &word, const string wordArray[], int wordCount);
@@ -39,7 +37,7 @@ public:
 
     double calcSentiScore(int posCount, int negCount);
 
-    void countSentimentWordsusingLinearSearch(const string &review);
+    double countSentimentWordsusingLinearSearch(const string &review);
 
     void countSentimentWordsUsingBinarySearch(const string &review);
 
@@ -48,6 +46,9 @@ public:
     void updateWordFrequency(const string &word);
 
     void printWordStats(bool useBubbleSort);
+
+    void searchRecordByIndex(const string &filename, int index, csvHandler &csvHandlerObj);
+
 };
 
 #endif

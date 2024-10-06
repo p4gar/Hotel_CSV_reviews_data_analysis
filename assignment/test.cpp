@@ -94,5 +94,24 @@ int main()
 
     system("pause");
 
+    cout << "Would you like to search for a specific review? (y/n): ";
+    char choice;
+    cin >> choice;
+
+    if (choice == 'y' || choice == 'Y')
+    {
+        string filename = "tripadvisor_hotel_reviews.csv";
+
+        // Ask the user for the index they want to search
+        int recordIndex;
+        cout << "Enter the index of the record you want to search for: ";
+        cin >> recordIndex;
+        cout << "-----------------------------------------" << endl;
+
+        // Call the function to search for the record by index
+        handler1.searchRecordByIndex(filename, recordIndex, handler1);
+
+    }
+
     return 0;
 }
