@@ -40,7 +40,7 @@ public:
 
     double countSentimentWordsusingLinearSearch(const string &review);
 
-    void countSentimentWordsUsingBinarySearch(const string &review);
+    double countSentimentWordsUsingBinarySearch(const string &review);
 
     void addWordFrequency(const string &word);
 
@@ -48,7 +48,9 @@ public:
 
     void printWordStats(bool useBubbleSort);
 
-    void searchRecordByIndex(const string &filename, int index, csvHandler &csvHandlerObj);
+    void searchRecordByIndexLS(const string &filename, int index, csvHandler &csvHandlerObj);
+    
+    void searchRecordByIndexBS(const string &filename, int index, csvHandler &csvHandlerObj);
 
 };
 

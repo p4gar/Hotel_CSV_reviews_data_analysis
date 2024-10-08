@@ -109,7 +109,7 @@ int main()
         cout << "-----------------------------------------" << endl;
 
         // Call the function to search for the record by index
-        handler1.searchRecordByIndex(filename, recordIndex, handler1);
+        handler1.searchRecordByIndexLS(filename, recordIndex, handler1);
 
     }
 
