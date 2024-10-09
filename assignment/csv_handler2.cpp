@@ -178,29 +178,54 @@ double csvHandler::countSentimentWordsusingLinearSearch(const string &review)
     int positiveWordCount = 0;
     int negativeWordCount = 0;
 
-    stringstream ss(review);
     string word;
-
-    cout << endl;
-    while (ss >> word)
+    string cleanedWord;
+    
+    // Loop through the review string manually
+    for (size_t i = 0; i < review.length(); ++i)
     {
-        string cleanedWord = cleanSentence(word);
+        if (isalnum(review[i]))
+        {
+            // Build the word character by character
+            word += review[i];
+        }
+        else if (!word.empty())
+        {
+            // Clean the word after collecting it
+            cleanedWord = cleanSentence(word);
+            if (linearSearch(cleanedWord, positiveWords, positiveCount))
+            {
+                positiveWordCount++;
+                totalPositiveWords++;
+            }
+            else if (linearSearch(cleanedWord, negativeWords, negativeCount))
+            {
+                negativeWordCount++;
+                totalNegativeWords++;
+            }
+
+            // Reset the word to collect the next one
+            word.clear();
+        }
+    }
+
+    // Handle the last word if it's not followed by a delimiter
+    if (!word.empty())
+    {
+        cleanedWord = cleanSentence(word);
         if (linearSearch(cleanedWord, positiveWords, positiveCount))
         {
             positiveWordCount++;
             totalPositiveWords++;
         }
-        else if (linearSearch(cleanedWord, negativeWords, negativeCount)) // Changed from `positiveCount` to `negativeCount`
+        else if (linearSearch(cleanedWord, negativeWords, negativeCount))
         {
             negativeWordCount++;
             totalNegativeWords++;
-
         }
     }
 
-
     cout << endl;
-
     cout << "Total Positive words count: " << positiveWordCount << endl;
     cout << "Total Negative words count: " << negativeWordCount << endl;
 
@@ -213,29 +238,42 @@ double csvHandler::countSentimentWordsusingLinearSearch(const string &review)
     return sentiScore;
 }
 
+
 double csvHandler::countSentimentWordsUsingBinarySearch(const string &review) // diff
 {
     int positiveWordCount = 0;
     int negativeWordCount = 0;
 
-    stringstream ss(review);
+    
     string word;
+    string cleanedWord;
 
-    while (ss >> word)
+    for (size_t i = 0; i < review.length(); ++i)
     {
-        string cleanedWord = cleanSentence(word);
-
-        if (binarySearch(cleanedWord, positiveWords, positiveCount))
+        if (isalnum(review[i]))
         {
-            positiveWordCount++;
-            addWordFrequency(cleanedWord);
-            totalPositiveWords++;
+            // Build the word character by character
+            word += review[i];
         }
-        else if (binarySearch(cleanedWord, negativeWords, negativeCount))
+        else if (!word.empty())
         {
-            negativeWordCount++;
-            addWordFrequency(cleanedWord);
-            totalNegativeWords++;
+            // Clean the word after collecting it
+            cleanedWord = cleanSentence(word);
+            if (binarySearch(cleanedWord, positiveWords, positiveCount))
+            {
+                positiveWordCount++;
+                addWordFrequency(cleanedWord);
+                totalPositiveWords++;
+            }
+            else if (binarySearch(cleanedWord, negativeWords, negativeCount))
+            {
+                negativeWordCount++;
+                addWordFrequency(cleanedWord);
+                totalNegativeWords++;
+            }
+
+            // Reset the word to collect the next one
+            word.clear();
         }
     }
 
