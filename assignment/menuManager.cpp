@@ -180,29 +180,7 @@ int menuManager::linear_bubble()
         // Count positive and negative words in the review
         handler2.countSentimentWordsusingLinearSearch(review);
 
-        // Split review into individual words and update word frequency
-        istringstream ss(review);
-        string word;
-        while (ss >> word) // Extract each word from the review
-        {
-            string cleanedWord;
-
-            // Remove non-alphabetic characters and convert to lowercase
-            for (char c : word)
-            {
-                if (isalpha(c)) // Only include alphabetic characters
-                {
-                    cleanedWord += tolower(c); // Convert to lowercase
-                }
-            }
-
-            // Skip empty words
-            if (cleanedWord.empty())
-                continue;
-
-            // Update frequency count for the cleaned word
-            handler2.updateWordFrequency(cleanedWord);
-        }
+        
 
         cout << endl;
         cout << string(60, '*') << endl;
