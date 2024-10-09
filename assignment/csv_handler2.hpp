@@ -1,6 +1,7 @@
 #ifndef CSV_HANDLER2_HPP
 #define CSV_HANDLER2_HPP
 
+#include "menuManager.hpp"
 #include <iostream>
 #include <fstream>
 #include <cstring> // For strcmp and strtok
@@ -14,8 +15,6 @@ class csvHandler
 private:
     string positiveWords[3000];     // Store positive words
     string negativeWords[5000];     // Store negative words
-    int positiveCount;              // Number of positive words loaded
-    int negativeCount;              // Number of negative words loaded
     string uniqueWords[50000];      // To store unique words
     int wordFrequency[50000] = {0}; // To store frequencies of words
     int totalUniqueWords = 0;       // Track unique words count
@@ -25,6 +24,8 @@ private:
     int totalNegativeWords = 0;
 
 public:
+    int positiveCount;              // Number of positive words loaded
+    int negativeCount;              // Number of negative words loaded
     csvHandler();
 
     int loadWords(const string &filename, string wordArray[], int maxSize);
@@ -47,9 +48,9 @@ public:
 
     void printWordStats(bool useBubbleSort);
 
-    void searchRecordByIndexLS(const string &filename, int index, csvHandler &csvHandlerObj);
+    void searchRecordByIndexLS(string * reviews, string * ratings, int index, int reviewCount);
     
-    void searchRecordByIndexBS(const string &filename, int index, csvHandler &csvHandlerObj);
+    void searchRecordByIndexBS(string * reviews, string * ratings, int index, int reviewCount);
 
 };
 

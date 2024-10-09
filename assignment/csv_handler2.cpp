@@ -1,4 +1,5 @@
 #include "csv_handler2.hpp"
+#include "menuManager.hpp"
 
 csvHandler::csvHandler()
 {
@@ -13,7 +14,6 @@ int csvHandler::loadWords(const string &filename, string wordArray[], int maxSiz
     ifstream file(filename);
     if (!file.is_open())
     {
-        cerr << "Error opening file: " << filename << endl;
         return 0;
     }
 
@@ -178,13 +178,21 @@ double csvHandler::countSentimentWordsusingLinearSearch(const string &review)
     int positiveWordCount = 0;
     int negativeWordCount = 0;
 
+<<<<<<< Updated upstream
     string word;
     string cleanedWord;
     
+=======
+    
+    string word;
+    string cleanedWord;
+
+>>>>>>> Stashed changes
     // Loop through the review string manually
     for (size_t i = 0; i < review.length(); ++i)
     {
         if (isalnum(review[i]))
+<<<<<<< Updated upstream
         {
             // Build the word character by character
             word += review[i];
@@ -214,14 +222,36 @@ double csvHandler::countSentimentWordsusingLinearSearch(const string &review)
     {
         cleanedWord = cleanSentence(word);
         if (linearSearch(cleanedWord, positiveWords, positiveCount))
+=======
+>>>>>>> Stashed changes
         {
-            positiveWordCount++;
-            totalPositiveWords++;
+            // Build the word character by character
+            word += review[i];
         }
+<<<<<<< Updated upstream
         else if (linearSearch(cleanedWord, negativeWords, negativeCount))
         {
             negativeWordCount++;
             totalNegativeWords++;
+=======
+        else if (!word.empty())
+        {
+            // Clean the word after collecting it
+            cleanedWord = cleanSentence(word);
+            if (linearSearch(cleanedWord, positiveWords, positiveCount))
+            {
+                positiveWordCount++;
+                totalPositiveWords++;
+            }
+            else if (linearSearch(cleanedWord, negativeWords, negativeCount))
+            {
+                negativeWordCount++;
+                totalNegativeWords++;
+            }
+
+            // Reset the word to collect the next one
+            word.clear();
+>>>>>>> Stashed changes
         }
     }
 
@@ -244,10 +274,17 @@ double csvHandler::countSentimentWordsUsingBinarySearch(const string &review) //
     int positiveWordCount = 0;
     int negativeWordCount = 0;
 
+<<<<<<< Updated upstream
     
     string word;
     string cleanedWord;
 
+=======
+    string word;
+    string cleanedWord;
+
+    // Loop through the review string manually
+>>>>>>> Stashed changes
     for (size_t i = 0; i < review.length(); ++i)
     {
         if (isalnum(review[i]))
@@ -292,7 +329,7 @@ void csvHandler::printWordStats(bool useBubbleSort)
 {
     cout << "Overall Review Sentiment:" << endl;
     cout << endl;
-    cout << "Total Reviews = " << totalReviews << endl;
+    cout << "Total Reviews = " << totalReviews - 1 << endl;
     cout << "Total Counts of positive words = " << totalPositiveWords << endl;
     cout << "Total Counts of negative words = " << totalNegativeWords << endl;
     cout << endl
@@ -395,136 +432,80 @@ void csvHandler::printWordStats(bool useBubbleSort)
     cout << endl;
 }
 
-void csvHandler::searchRecordByIndexLS(const string &filename, int index, csvHandler &csvHandlerObj)
+void csvHandler::searchRecordByIndexLS(string * reviews, string * ratings, int index, int reviewCount)
 {
-    ifstream file(filename);
-    if (!file.is_open())
+    if (index < 0 || index >= reviewCount)
     {
-        cerr << "Error opening file: " << filename << endl;
+        cout << "No record found at index " << index << endl;
         return;
     }
 
-    string line;
-    int currentIndex = 0; // Start index from 0
+    string review = reviews[index];
+    string ratingstr = ratings[index];
+    int rating = stoi(ratingstr);
 
-    // Iterate through the file until we reach the desired index
-    while (getline(file, line))
+    cout << endl;
+    cout << "Record at index " << index << endl;
+
+    cout << "Review: " << endl << review << endl;
+
+    double sentiScore = countSentimentWordsusingLinearSearch(review);
+    int revisedRating = static_cast<int>(sentiScore);
+    cout << endl;
+    cout << string(60, '-') << endl;
+    cout << endl;
+    cout << "User Rating: " << rating << endl;
+    cout << "Revised Rating: " << revisedRating << endl;
+
+    if (revisedRating == rating)
     {
-        if (currentIndex == index)
-        {
-            // Found the desired line
-            cout << endl;
-            cout << "Record at index " << index << ":" << endl;
-
-            // Process the record (e.g., extract review and rating)
-            size_t commaPos = line.find_last_of(',');
-            if (commaPos != string::npos)
-            {
-                string review = line.substr(0, commaPos);
-                string ratingstr = line.substr(commaPos + 1);
-                int rating = stoi(ratingstr);
-
-                cout << "Review: " << review << endl;
-
-                double sentiScore = csvHandlerObj.countSentimentWordsusingLinearSearch(review);
-                int revisedRating = static_cast<int>(sentiScore);
-                cout << endl;
-                cout << string(60, '-') << endl;
-                cout << endl;
-                cout << "Rating: " << rating << endl;
-                cout << "Revised Rating: " << revisedRating << endl;
-
-                if (revisedRating == rating)
-                {
-                    cout << "Analysis output:" << endl;
-                    cout << "User's subjective evaluation matches the sentiment score provided by the analysis.\n"
-                    "There is a consistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
-                }
-                else
-                {
-                    cout << "Analysis output: " << endl;
-                    cout << "User's subjective evaluation does not match the sentiment score provided by the analysis.\n"
-                    "There is an  inconsistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
-                }
-            }
-            else
-            {
-                cerr << "Invalid format in line: " << line << endl;
-            }
-            file.close();
-            return;
-        }
-        currentIndex++;
+        cout << "Analysis output:" << endl;
+        cout << "User 's subjective evaluation matches the sentiment score provided by the analysis.\n"
+        "There is a consistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
     }
-
-    // If the index is out of bounds
-    cout << "No record found at index " << index << endl;
-    file.close();
+    else
+    {
+        cout << "Analysis output: " << endl;
+        cout << "User 's subjective evaluation does not match the sentiment score provided by the analysis.\n"
+        "There is an  inconsistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
+    }
 }
 
-void csvHandler::searchRecordByIndexBS(const string &filename, int index, csvHandler &csvHandlerObj)
+void csvHandler::searchRecordByIndexBS(string * reviews, string * ratings, int index, int reviewCount)
 {
-    ifstream file(filename);
-    if (!file.is_open())
+    if (index < 0 || index >= reviewCount)
     {
-        cerr << "Error opening file: " << filename << endl;
+        cout << "No record found at index " << index << endl;
         return;
     }
 
-    string line;
-    int currentIndex = 0; // Start index from 0
+    string review = reviews[index];
+    string ratingstr = ratings[index];
+    int rating = stoi(ratingstr);
 
-    // Iterate through the file until we reach the desired index
-    while (getline(file, line))
+    cout << endl;
+    cout << "Record at index " << index << endl;
+
+    cout << "Review: " << endl << review << endl;
+
+    double sentiScore = countSentimentWordsUsingBinarySearch(review);
+    int revisedRating = static_cast<int>(sentiScore);
+    cout << endl;
+    cout << string(60, '-') << endl;
+    cout << endl;
+    cout << "User Rating: " << rating << endl;
+    cout << "Revised Rating: " << revisedRating << endl;
+
+    if (revisedRating == rating)
     {
-        if (currentIndex == index)
-        {
-            // Found the desired line
-            cout << endl;
-            cout << "Record at index " << index << ":" << endl;
-
-            // Process the record (e.g., extract review and rating)
-            size_t commaPos = line.find_last_of(',');
-            if (commaPos != string::npos)
-            {
-                string review = line.substr(0, commaPos);
-                string ratingstr = line.substr(commaPos + 1);
-                int rating = stoi(ratingstr);
-
-                cout << "Review: " << review << endl;
-
-                double sentiScore = csvHandlerObj.countSentimentWordsUsingBinarySearch(review);
-                int revisedRating = static_cast<int>(sentiScore);
-                cout << endl;
-                cout << string(60, '-') << endl;
-                cout << endl;
-                cout << "Rating: " << rating << endl;
-                cout << "Revised Rating: " << revisedRating << endl;
-
-                if (revisedRating == rating)
-                {
-                    cout << "Analysis output:" << endl;
-                    cout << "User's subjective evaluation matches the sentiment score provided by the analysis.\n"
-                    "There is a consistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
-                }
-                else
-                {
-                    cout << "Analysis output: " << endl;
-                    cout << "User's subjective evaluation does not match the sentiment score provided by the analysis.\n"
-                    "There is an  inconsistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
-                }
-            }
-            else
-            {
-                cerr << "Invalid format in line: " << line << endl;
-            }
-            file.close();
-            return;
-        }
-        currentIndex++;
+        cout << "Analysis output:" << endl;
+        cout << "User 's subjective evaluation matches the sentiment score provided by the analysis.\n"
+        "There is a consistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
     }
-
-    // If the index is out of bounds
-    cout << "No record found at index " << index << endl;
-    file.close();
+    else
+    {
+        cout << "Analysis output: " << endl;
+        cout << "User 's subjective evaluation does not match the sentiment score provided by the analysis.\n"
+        "There is an  inconsistency between the sentiment score generated by the analysis and the user's evaluation of the  sentiment." << endl;
+    }
 }
