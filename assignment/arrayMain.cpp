@@ -23,7 +23,7 @@ int main()
         cout << "4. Exit" << endl;
         cout << endl;
         cout << string(60, '-') << endl;
-        cout << "Enter your choice (1-4): ";
+        cout << "Enter your choice: ";
 
         if (cin >> menuOption)
         {
